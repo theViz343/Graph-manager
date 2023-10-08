@@ -47,11 +47,31 @@ public class GraphData {
         String opt = toString();
         Files.writeString(Paths.get(filepath), opt, StandardCharsets.ISO_8859_1);
     }
+
+    public void addNode(String label) {
+        boolean existing = graphObject.vertexSet().stream().anyMatch(v -> Objects.equals(v, label));
+
+        if (existing) {
+            System.out.println("Node with label "+label+" already exists!");
+        }
+        else {
+            graphObject.addVertex(label);
+        }
+    }
+
+    public void addNodes(String[] labels) {
+        for(String label: labels) {
+            addNode(label);
+        }
+    }
     public static void main(String[] args) throws IOException {
         GraphData graphApi = new GraphData();
         graphApi.parseGraph("src/main/example.dot");
         System.out.println(graphApi.toString());
         graphApi.outputGraph("src/main/output.txt");
+        graphApi.addNodes(new String[]{"Z", "X"});
+        System.out.println(graphApi.toString());
+
 
         
 
