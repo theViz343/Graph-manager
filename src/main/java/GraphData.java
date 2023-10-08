@@ -64,6 +64,23 @@ public class GraphData {
             addNode(label);
         }
     }
+
+    public void addEdge(String srcLabel, String dstLabel) {
+        boolean srcnodeexisting = graphObject.vertexSet().stream().anyMatch(v -> Objects.equals(v, srcLabel));
+        boolean dstnodeexisting = graphObject.vertexSet().stream().anyMatch(v -> Objects.equals(v, dstLabel));
+        DefaultEdge edgeexisting = graphObject.getEdge(srcLabel, dstLabel);
+        if (edgeexisting!=null) {
+            System.out.println("Edge "+ edgeexisting + " already exists!");
+            return;
+        }
+        if (!srcnodeexisting) {
+            System.out.println("Node "+ srcLabel+" does not exist!");
+        } else if (!dstnodeexisting) {
+            System.out.println("Node "+ dstLabel+" does not exist!");
+        } else {
+            graphObject.addEdge(srcLabel, dstLabel);
+        }
+    }
     public static void main(String[] args) throws IOException {
         GraphData graphApi = new GraphData();
         graphApi.parseGraph("src/main/example.dot");
@@ -71,6 +88,12 @@ public class GraphData {
         graphApi.outputGraph("src/main/output.txt");
         graphApi.addNodes(new String[]{"Z", "X"});
         System.out.println(graphApi.toString());
+        graphApi.addEdge("Z", "X");
+        System.out.println(graphApi.toString());
+        graphApi.addEdge("Z", "X");
+        System.out.println(graphApi.toString());
+
+
 
 
         
