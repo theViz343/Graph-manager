@@ -21,14 +21,19 @@ import java.util.*;
 public class GraphData {
     private Graph<String, DefaultEdge> graphObject = new DefaultDirectedGraph<>(DefaultEdge.class);
 
-    public void parseGraph(String filepath) throws IOException {
+    public void parseGraph(String filepath) {
 
         // Import the graph from file
         DOTImporter<String, DefaultEdge> dotImporter = new DOTImporter<>();
         dotImporter.setVertexFactory(label -> label);
-        String fileContent = Files.readString(Paths.get(filepath));
-        dotImporter.importGraph(graphObject, new StringReader(fileContent));
-        System.out.println("Graph successfully parsed!");
+        try {
+            String fileContent = Files.readString(Paths.get(filepath));
+            dotImporter.importGraph(graphObject, new StringReader(fileContent));
+            System.out.println("Graph successfully parsed!");
+        } catch (IOException e) {
+            System.out.println("Cannot read file " + filepath);
+            System.out.println(e);
+        }
     }
 
     @Override
@@ -48,9 +53,14 @@ public class GraphData {
         return opt;
     }
 
-    public void outputGraph(String filepath) throws IOException {
+    public void outputGraph(String filepath) {
         String opt = toString();
-        Files.writeString(Paths.get(filepath), opt, StandardCharsets.ISO_8859_1);
+        try {
+            Files.writeString(Paths.get(filepath), opt, StandardCharsets.ISO_8859_1);
+        } catch (IOException e) {
+            System.out.println("Cannot write file at " + filepath);
+            System.out.println(e);
+        }
     }
 
     public void addNode(String label) {
@@ -87,14 +97,19 @@ public class GraphData {
         }
     }
 
-    public void outputDOTGraph(String path) throws IOException {
+    public void outputDOTGraph(String path) {
         DOTExporter<String, DefaultEdge> exporter = new DOTExporter<>(v -> v);
         Writer writer = new StringWriter();
         exporter.exportGraph(graphObject, writer);
-        Files.writeString(Paths.get(path), writer.toString(), StandardCharsets.ISO_8859_1);
+        try {
+            Files.writeString(Paths.get(path), writer.toString(), StandardCharsets.ISO_8859_1);
+        } catch (IOException e) {
+            System.out.println("Cannot write file at " + path);
+            System.out.println(e);
+        }
     }
 
-    public void outputGraphics(String path, String format) throws IOException {
+    public void outputGraphics(String path, String format) {
         JGraphXAdapter<String, DefaultEdge> graphAdapter =
                 new JGraphXAdapter<String, DefaultEdge>(graphObject);
         mxIGraphLayout layout = new mxCircleLayout(graphAdapter);
@@ -103,9 +118,14 @@ public class GraphData {
         BufferedImage image =
                 mxCellRenderer.createBufferedImage(graphAdapter, null, 2, Color.WHITE, true, null);
         File imgFile = new File(path+"gen_graph."+format);
-        ImageIO.write(image, "PNG", imgFile);
+        try {
+            ImageIO.write(image, "PNG", imgFile);
+        } catch (IOException e) {
+            System.out.println("Cannot write file at " + path);
+            System.out.println(e);
+        }
     }
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         GraphData graphApi = new GraphData();
         graphApi.parseGraph("src/main/resources/example.dot");
         System.out.println(graphApi.toString());
