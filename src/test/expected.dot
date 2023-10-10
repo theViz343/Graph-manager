@@ -1,0 +1,11 @@
+strict digraph G {
+  A;
+  B;
+  C;
+  D;
+  Z;
+  A -> B;
+  A -> C;
+  A -> D;
+  Z -> C;
+}

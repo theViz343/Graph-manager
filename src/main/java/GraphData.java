@@ -12,16 +12,15 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.io.File;
-import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
 public class GraphData {
-    private Graph<String, DefaultEdge> graphObject = new DefaultDirectedGraph<>(DefaultEdge.class);
+    Graph<String, DefaultEdge> graphObject = new DefaultDirectedGraph<>(DefaultEdge.class);
 
-    public void parseGraph(String filepath) {
+    public boolean parseGraph(String filepath) {
 
         // Import the graph from file
         DOTImporter<String, DefaultEdge> dotImporter = new DOTImporter<>();
@@ -30,9 +29,11 @@ public class GraphData {
             String fileContent = Files.readString(Paths.get(filepath));
             dotImporter.importGraph(graphObject, new StringReader(fileContent));
             System.out.println("Graph successfully parsed!");
+            return true;
         } catch (IOException e) {
             System.out.println("Cannot read file " + filepath);
             System.out.println(e);
+            return false;
         }
     }
 
@@ -53,24 +54,28 @@ public class GraphData {
         return opt;
     }
 
-    public void outputGraph(String filepath) {
+    public boolean outputGraph(String filepath) {
         String opt = toString();
         try {
             Files.writeString(Paths.get(filepath), opt, StandardCharsets.ISO_8859_1);
+            return true;
         } catch (IOException e) {
             System.out.println("Cannot write file at " + filepath);
             System.out.println(e);
+            return false;
         }
     }
 
-    public void addNode(String label) {
+    public boolean addNode(String label) {
         boolean existing = graphObject.vertexSet().stream().anyMatch(v -> Objects.equals(v, label));
 
         if (existing) {
             System.out.println("Node with label "+label+" already exists!");
+            return false;
         }
         else {
             graphObject.addVertex(label);
+            return true;
         }
     }
 
@@ -80,32 +85,37 @@ public class GraphData {
         }
     }
 
-    public void addEdge(String srcLabel, String dstLabel) {
+    public boolean addEdge(String srcLabel, String dstLabel) {
         boolean srcnodeexisting = graphObject.vertexSet().stream().anyMatch(v -> Objects.equals(v, srcLabel));
         boolean dstnodeexisting = graphObject.vertexSet().stream().anyMatch(v -> Objects.equals(v, dstLabel));
         DefaultEdge edgeexisting = graphObject.getEdge(srcLabel, dstLabel);
         if (edgeexisting!=null) {
             System.out.println("Edge "+ edgeexisting + " already exists!");
-            return;
+            return false;
         }
         if (!srcnodeexisting) {
             System.out.println("Node "+ srcLabel+" does not exist!");
+            return false;
         } else if (!dstnodeexisting) {
             System.out.println("Node "+ dstLabel+" does not exist!");
+            return false;
         } else {
             graphObject.addEdge(srcLabel, dstLabel);
+            return true;
         }
     }
 
-    public void outputDOTGraph(String path) {
+    public boolean outputDOTGraph(String path) {
         DOTExporter<String, DefaultEdge> exporter = new DOTExporter<>(v -> v);
         Writer writer = new StringWriter();
         exporter.exportGraph(graphObject, writer);
         try {
             Files.writeString(Paths.get(path), writer.toString(), StandardCharsets.ISO_8859_1);
+            return true;
         } catch (IOException e) {
             System.out.println("Cannot write file at " + path);
             System.out.println(e);
+            return false;
         }
     }
 
