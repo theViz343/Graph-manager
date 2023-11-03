@@ -79,9 +79,30 @@ public class GraphData {
         }
     }
 
-    public void addNodes(String[] labels) {
+    public boolean addNodes(String[] labels) {
+        boolean result = true;
         for(String label: labels) {
-            addNode(label);
+            result = result && addNode(label);
+        }
+        return result;
+    }
+
+    public boolean removeNode(String label) {
+        boolean existing = graphObject.vertexSet().stream().anyMatch(v -> Objects.equals(v, label));
+
+        if (existing) {
+            graphObject.removeVertex(label);
+            return true;
+        }
+        else {
+            System.out.println("Node with label "+label+" does not exist!");
+            return false;
+        }
+    }
+
+    public void removeNodes(String[] labels) {
+        for(String label: labels) {
+            removeNode(label);
         }
     }
 

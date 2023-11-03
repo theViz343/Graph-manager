@@ -87,6 +87,38 @@ public class GraphDataTest {
     }
 
     @Test
+    @DisplayName("Test addition of multiple nodes if nodes exist")
+    public void TestAddNodesIfExistAlready(){
+        String[] nodes = {"A", "B", "C"};
+        assertFalse(graphApi.addNodes(nodes));
+    }
+
+    @Test
+    @DisplayName("Test removeNode if node exists.")
+    public void TestRemoveNode(){
+        assertTrue(graphApi.removeNode("A"));
+        assertFalse(graphApi.graphObject.vertexSet().stream().anyMatch(v -> (v.equals("A"))));
+    }
+
+    @Test
+    @DisplayName("Test removeNode if node does not exist.")
+    public void TestRemoveNodeIfExists(){
+        graphApi.removeNode("Z");
+        assertFalse(graphApi.removeNode("Z"));
+    }
+
+    @Test
+    @DisplayName("Test removal of multiple nodes")
+    public void TestRemoveNodes(){
+        String[] nodes = {"A", "B", "C"};
+        graphApi.removeNodes(nodes);
+        for(String node:nodes) {
+            assertFalse(graphApi.graphObject.vertexSet().stream().anyMatch(v -> (v.equals(node))));
+        }
+    }
+
+
+    @Test
     @DisplayName("Test addition of edge")
     public void TestAddEdge(){
         assertTrue(graphApi.addEdge("B","C"));
