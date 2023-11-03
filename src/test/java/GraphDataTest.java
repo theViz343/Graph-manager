@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -152,6 +153,22 @@ public class GraphDataTest {
     @DisplayName("Test addition of already existing edge")
     public void TestRemoveEdgeIfExists(){
         assertThrows(Exception.class, () -> graphApi.removeEdge("B","C"));
+    }
+
+
+    @Test
+    @DisplayName("Test bfs graph search api")
+    public void TestGraphSearch() {
+        Path path = graphApi.GraphSearch("C", "D");
+        List<String> expected = List.of(new String[]{"D", "A", "C"});
+        assertEquals(path.path, expected);
+    }
+
+    @Test
+    @DisplayName("Test bfs graph search api (node does not exist)")
+    public void TestGraphSearchNotExist() {
+        Path path = graphApi.GraphSearch("C", "X");
+        assertNull(path);
     }
 
     @Test
