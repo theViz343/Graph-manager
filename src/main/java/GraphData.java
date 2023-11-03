@@ -21,6 +21,11 @@ import java.util.List;
 public class GraphData {
     Graph<String, DefaultEdge> graphObject = new DefaultDirectedGraph<>(DefaultEdge.class);
 
+    enum Algorithm{
+        BFS,
+        DFS
+    }
+
     public boolean parseGraph(String filepath) {
 
         // Import the graph from file
@@ -125,30 +130,60 @@ public class GraphData {
         }
     }
 
-    public Path GraphSearch(String src, String dst) {
+    public Path GraphSearch(String src, String dst, Algorithm algo) {
         Path p = new Path();
         String source = src;
         HashMap<String, Boolean> visited = new HashMap<>();
         HashMap<String, String> parent = new HashMap<>();
 
-        LinkedList<String> queue = new LinkedList<>();
-        visited.put(src, true);
-        queue.add(src);
+        switch(algo) {
+            case Algorithm.BFS: {
+                System.out.println("Using BFS");
+                LinkedList<String> queue = new LinkedList<>();
+                visited.put(src, true);
+                queue.add(src);
 
-        while (!queue.isEmpty()) {
+                while (!queue.isEmpty()) {
 
-            src = queue.poll();
-            if (Objects.equals(src, dst)) {
+                    src = queue.poll();
+                    if (Objects.equals(src, dst)) {
+                        break;
+                    }
+                    List<String> successors = Graphs.neighborListOf(graphObject,src);
+                    for (String node : successors) {
+
+                        if (visited.get(node) == null) {
+                            visited.put(node, true);
+                            parent.put(node, src);
+                            queue.add(node);
+                        }
+                    }
+                }
                 break;
             }
-            List<String> successors = Graphs.neighborListOf(graphObject,src);
-            for (String node : successors) {
+            case Algorithm.DFS: {
+                System.out.println("Using DFS");
+                Stack<String> stack = new Stack<>();
+                visited.put(src, true);
+                stack.push(src);
 
-                if (visited.get(node)==null) {
-                    visited.put(node, true);
-                    parent.put(node,src);
-                    queue.add(node);
+                while (!stack.isEmpty()) {
+
+                    src = stack.pop();
+                    if (Objects.equals(src, dst)) {
+                        break;
+                    }
+                    List<String> successors = Graphs.neighborListOf(graphObject,src);
+                    for (String node : successors) {
+
+                        if (visited.get(node) == null) {
+                            visited.put(node, true);
+                            parent.put(node, src);
+                            stack.push(node);
+                        }
+                    }
                 }
+                break;
             }
         }
         String node = dst;
@@ -210,7 +245,7 @@ public class GraphData {
         graphApi.addNode("E");
         graphApi.addEdge("D","E");
         System.out.println(graphApi.toString());
-        Path path = graphApi.GraphSearch("C", "D");
+        Path path = graphApi.GraphSearch("C","D", Algorithm.BFS);
         path.printPath();
 //        graphApi.outputGraph("src/main/resources/output.txt");
 //        graphApi.addNodes(new String[]{"Z", "X"});

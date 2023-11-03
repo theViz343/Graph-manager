@@ -158,16 +158,31 @@ public class GraphDataTest {
 
     @Test
     @DisplayName("Test bfs graph search api")
-    public void TestGraphSearch() {
-        Path path = graphApi.GraphSearch("C", "D");
+    public void TestGraphSearchBFS() {
+        Path path = graphApi.GraphSearch("C", "D", GraphData.Algorithm.BFS);
         List<String> expected = List.of(new String[]{"D", "A", "C"});
         assertEquals(path.path, expected);
     }
 
     @Test
     @DisplayName("Test bfs graph search api (node does not exist)")
-    public void TestGraphSearchNotExist() {
-        Path path = graphApi.GraphSearch("C", "X");
+    public void TestGraphSearchNotExistBFS() {
+        Path path = graphApi.GraphSearch("C", "X", GraphData.Algorithm.BFS);
+        assertNull(path);
+    }
+
+    @Test
+    @DisplayName("Test dfs graph search api")
+    public void TestGraphSearchDFS() {
+        Path path = graphApi.GraphSearch("C", "D", GraphData.Algorithm.DFS);
+        List<String> expected = List.of(new String[]{"D", "A", "C"});
+        assertEquals(path.path, expected);
+    }
+
+    @Test
+    @DisplayName("Test dfs graph search api (node does not exist)")
+    public void TestGraphSearchNotExistDFS() {
+        Path path = graphApi.GraphSearch("C", "X", GraphData.Algorithm.DFS);
         assertNull(path);
     }
 
