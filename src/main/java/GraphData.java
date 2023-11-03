@@ -87,20 +87,18 @@ public class GraphData {
         return result;
     }
 
-    public boolean removeNode(String label) {
+    public void removeNode(String label) throws Exception {
         boolean existing = graphObject.vertexSet().stream().anyMatch(v -> Objects.equals(v, label));
 
         if (existing) {
             graphObject.removeVertex(label);
-            return true;
         }
         else {
-            System.out.println("Node with label "+label+" does not exist!");
-            return false;
+            throw new Exception("Node with label "+label+" does not exist!");
         }
     }
 
-    public void removeNodes(String[] labels) {
+    public void removeNodes(String[] labels) throws Exception {
         for(String label: labels) {
             removeNode(label);
         }

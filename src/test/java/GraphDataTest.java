@@ -95,26 +95,32 @@ public class GraphDataTest {
 
     @Test
     @DisplayName("Test removeNode if node exists.")
-    public void TestRemoveNode(){
-        assertTrue(graphApi.removeNode("A"));
+    public void TestRemoveNode() throws Exception {
+        graphApi.removeNode("A");
         assertFalse(graphApi.graphObject.vertexSet().stream().anyMatch(v -> (v.equals("A"))));
     }
 
     @Test
     @DisplayName("Test removeNode if node does not exist.")
-    public void TestRemoveNodeIfExists(){
-        graphApi.removeNode("Z");
-        assertFalse(graphApi.removeNode("Z"));
+    public void TestRemoveNodeIfExists() {
+        assertThrows(Exception.class, () -> graphApi.removeNode("Z"));
     }
 
     @Test
     @DisplayName("Test removal of multiple nodes")
-    public void TestRemoveNodes(){
+    public void TestRemoveNodes() throws Exception {
         String[] nodes = {"A", "B", "C"};
         graphApi.removeNodes(nodes);
         for(String node:nodes) {
             assertFalse(graphApi.graphObject.vertexSet().stream().anyMatch(v -> (v.equals(node))));
         }
+    }
+
+    @Test
+    @DisplayName("Test removal of multiple nodes which do not exist")
+    public void TestRemoveNodesIfNotExist() throws Exception {
+        String[] nodes = {"X", "Y", "Z"};
+        assertThrows(Exception.class, () -> graphApi.removeNodes(nodes));
     }
 
 
