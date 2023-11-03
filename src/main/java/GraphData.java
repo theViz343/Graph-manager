@@ -16,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.List;
 
 public class GraphData {
     Graph<String, DefaultEdge> graphObject = new DefaultDirectedGraph<>(DefaultEdge.class);
@@ -124,6 +125,46 @@ public class GraphData {
         }
     }
 
+    public Path GraphSearch(String src, String dst) {
+        Path p = new Path();
+        String source = src;
+        HashMap<String, Boolean> visited = new HashMap<>();
+        HashMap<String, String> parent = new HashMap<>();
+
+        LinkedList<String> queue = new LinkedList<>();
+        visited.put(src, true);
+        queue.add(src);
+
+        while (!queue.isEmpty()) {
+
+            src = queue.poll();
+            if (Objects.equals(src, dst)) {
+                break;
+            }
+            List<String> successors = Graphs.neighborListOf(graphObject,src);
+            for (String node : successors) {
+
+                if (visited.get(node)==null) {
+                    visited.put(node, true);
+                    parent.put(node,src);
+                    queue.add(node);
+                }
+            }
+        }
+        String node = dst;
+        p.add(node);
+        if (visited.get(dst) != null) {
+            while (true) {
+                if (Objects.equals(node, source)) {
+                    return p;
+                }
+                node = parent.get(node);
+                p.add(node);
+            }
+        } else {
+            return null;
+        }
+    }
     public void removeEdge(String srcLabel, String dstLabel) throws Exception {
         DefaultEdge edgeexisting = graphObject.getEdge(srcLabel, dstLabel);
         if (edgeexisting==null) {
@@ -166,16 +207,20 @@ public class GraphData {
     public static void main(String[] args) {
         GraphData graphApi = new GraphData();
         graphApi.parseGraph("src/main/resources/example.dot");
+        graphApi.addNode("E");
+        graphApi.addEdge("D","E");
         System.out.println(graphApi.toString());
-        graphApi.outputGraph("src/main/resources/output.txt");
-        graphApi.addNodes(new String[]{"Z", "X"});
-        System.out.println(graphApi.toString());
-        graphApi.addEdge("Z", "X");
-        System.out.println(graphApi.toString());
-        graphApi.addEdge("Z", "X");
-        System.out.println(graphApi.toString());
-        graphApi.outputDOTGraph("src/main/resources/gen_graph.dot");
-        graphApi.outputGraphics("src/main/resources/", "png");
+        Path path = graphApi.GraphSearch("C", "D");
+        path.printPath();
+//        graphApi.outputGraph("src/main/resources/output.txt");
+//        graphApi.addNodes(new String[]{"Z", "X"});
+//        System.out.println(graphApi.toString());
+//        graphApi.addEdge("Z", "X");
+//        System.out.println(graphApi.toString());
+//        graphApi.addEdge("Z", "X");
+//        System.out.println(graphApi.toString());
+//        graphApi.outputDOTGraph("src/main/resources/gen_graph.dot");
+//        graphApi.outputGraphics("src/main/resources/", "png");
 
 
 
