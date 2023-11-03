@@ -143,6 +143,18 @@ public class GraphDataTest {
     }
 
     @Test
+    @DisplayName("Test removal of edge")
+    public void TestRemoveEdge() throws Exception {
+        graphApi.removeEdge("A","B");
+    }
+
+    @Test
+    @DisplayName("Test addition of already existing edge")
+    public void TestRemoveEdgeIfExists(){
+        assertThrows(Exception.class, () -> graphApi.removeEdge("B","C"));
+    }
+
+    @Test
     @DisplayName("Test DOT graph generation")
     public void TestOutputDOTGraph() throws IOException {
         graphApi.addNode("Z");

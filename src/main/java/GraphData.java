@@ -124,6 +124,15 @@ public class GraphData {
         }
     }
 
+    public void removeEdge(String srcLabel, String dstLabel) throws Exception {
+        DefaultEdge edgeexisting = graphObject.getEdge(srcLabel, dstLabel);
+        if (edgeexisting==null) {
+            throw new Exception("Edge does not exist!");
+        } else {
+            graphObject.removeEdge(srcLabel, dstLabel);
+        }
+    }
+
     public boolean outputDOTGraph(String path) {
         DOTExporter<String, DefaultEdge> exporter = new DOTExporter<>(v -> v);
         Writer writer = new StringWriter();
