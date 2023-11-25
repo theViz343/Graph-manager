@@ -27,13 +27,13 @@ public class GraphDataTest {
         nodes.add("B");
         nodes.add("C");
         nodes.add("D");
-        assertEquals(nodes, graphApi.graphObject.vertexSet());
+        assertEquals(nodes, graphApi.getGraph().vertexSet());
         Set<String> edges = new HashSet<String>();
         Set<String> expected_edges = new HashSet<String>();
         edges.add("(A : B)");
         edges.add("(A : C)");
         edges.add("(A : D)");
-        for (DefaultEdge e: graphApi.graphObject.edgeSet()) {
+        for (DefaultEdge e: graphApi.getGraph().edgeSet()) {
             expected_edges.add(e.toString());
         }
         assertEquals(expected_edges, edges);
@@ -67,7 +67,7 @@ public class GraphDataTest {
     @DisplayName("Test outputGraph if node does not exist already")
     public void TestAddNode(){
         assertTrue(graphApi.addNode("Z"));
-        assertTrue(graphApi.graphObject.vertexSet().stream().anyMatch(v -> (v.equals("Z"))));
+        assertTrue(graphApi.getGraph().vertexSet().stream().anyMatch(v -> (v.equals("Z"))));
     }
 
     @Test
@@ -83,7 +83,7 @@ public class GraphDataTest {
         String[] nodes = {"Z", "X", "Y"};
         graphApi.addNodes(nodes);
         for(String node:nodes) {
-            assertTrue(graphApi.graphObject.vertexSet().stream().anyMatch(v -> (v.equals(node))));
+            assertTrue(graphApi.getGraph().vertexSet().stream().anyMatch(v -> (v.equals(node))));
         }
     }
 
@@ -98,7 +98,7 @@ public class GraphDataTest {
     @DisplayName("Test removeNode if node exists.")
     public void TestRemoveNode() throws Exception {
         graphApi.removeNode("A");
-        assertFalse(graphApi.graphObject.vertexSet().stream().anyMatch(v -> (v.equals("A"))));
+        assertFalse(graphApi.getGraph().vertexSet().stream().anyMatch(v -> (v.equals("A"))));
     }
 
     @Test
@@ -113,7 +113,7 @@ public class GraphDataTest {
         String[] nodes = {"A", "B", "C"};
         graphApi.removeNodes(nodes);
         for(String node:nodes) {
-            assertFalse(graphApi.graphObject.vertexSet().stream().anyMatch(v -> (v.equals(node))));
+            assertFalse(graphApi.getGraph().vertexSet().stream().anyMatch(v -> (v.equals(node))));
         }
     }
 

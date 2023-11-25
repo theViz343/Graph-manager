@@ -19,11 +19,15 @@ import java.util.*;
 import java.util.List;
 
 public class GraphData {
-    Graph<String, DefaultEdge> graphObject = new DefaultDirectedGraph<>(DefaultEdge.class);
+    private Graph<String, DefaultEdge> graphObject = new DefaultDirectedGraph<>(DefaultEdge.class);
 
     enum Algorithm{
         BFS,
         DFS
+    }
+
+    public Graph<String, DefaultEdge> getGraph() {
+        return graphObject;
     }
 
     public boolean parseGraph(String filepath) {
