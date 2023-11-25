@@ -54,6 +54,8 @@ public class GraphData {
         graphString+="Node labels: "+graphObject.vertexSet()+"\n";
         graphString+="Number of edges: "+graphObject.edgeSet().size()+"\n";
         StringBuilder edges = new StringBuilder();
+
+        // Iterate over edges to form edge string
         for (DefaultEdge e: graphObject.edgeSet()) {
             edges.append(e.toString().replace(":", "->"));
             edges.append(", ");
@@ -65,6 +67,7 @@ public class GraphData {
     }
 
     public boolean outputGraph(String filepath) {
+        // Use function defined earlier
         String graphString = toString();
         try {
             Files.writeString(Paths.get(filepath), graphString, StandardCharsets.ISO_8859_1);
@@ -77,6 +80,7 @@ public class GraphData {
     }
 
     public boolean addNode(String label) {
+        // Check if node already exists
         boolean existing = graphObject.vertexSet().stream().anyMatch(v -> Objects.equals(v, label));
 
         if (existing) {
@@ -92,12 +96,14 @@ public class GraphData {
     public boolean addNodes(String[] labels) {
         boolean result = true;
         for(String label: labels) {
+            // Store the logical AND for the boolean values returned by the function
             result = result && addNode(label);
         }
         return result;
     }
 
     public void removeNode(String label) throws Exception {
+        // Check if node already exists
         boolean existing = graphObject.vertexSet().stream().anyMatch(v -> Objects.equals(v, label));
 
         if (existing) {
@@ -140,6 +146,7 @@ public class GraphData {
         HashMap<String, Boolean> visited = new HashMap<>();
         HashMap<String, String> parent = new HashMap<>();
 
+        // Select algorithm and apply it
         switch(algo) {
             case Algorithm.BFS: {
                 System.out.println("Using BFS");
@@ -206,6 +213,7 @@ public class GraphData {
     }
     public void removeEdge(String srcLabel, String dstLabel) throws Exception {
         DefaultEdge edgeexisting = graphObject.getEdge(srcLabel, dstLabel);
+        // Check if edge exists
         if (edgeexisting==null) {
             throw new Exception("Edge does not exist!");
         } else {
