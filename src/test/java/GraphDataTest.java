@@ -14,9 +14,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class GraphDataTest {
     GraphData graphApi = new GraphData();
+    static final String GRAPH_PATH = "src/test/test_graph.dot";
+    static final String OUTPUT_GRAPH_STRING_PATH = "src/test/output.txt";
+    static final String OUTPUT_GRAPH_DOT_PATH = "src/test/gen_graph.dot";
+    static final String EXPECTED_GRAPH_DOT_PATH = "src/test/expected.dot";
+
     @BeforeEach
     public void init_graph() {
-        assertTrue(graphApi.parseGraph("src/test/test_graph.dot"));
+        assertTrue(graphApi.parseGraph(GRAPH_PATH));
     }
 
     @Test
@@ -59,8 +64,8 @@ public class GraphDataTest {
                 Number of edges: 3
                 Node and edge directions: (A -> B), (A -> C), (A -> D)
                 """;
-        assertTrue(graphApi.outputGraph("src/test/output.txt"));
-        assertEquals(expected_value, Files.readString(Paths.get("src/test/output.txt")));
+        assertTrue(graphApi.outputGraph(OUTPUT_GRAPH_STRING_PATH));
+        assertEquals(expected_value, Files.readString(Paths.get(OUTPUT_GRAPH_STRING_PATH)));
     }
 
     @Test
@@ -191,9 +196,9 @@ public class GraphDataTest {
     public void TestOutputDOTGraph() throws IOException {
         graphApi.addNode("Z");
         graphApi.addEdge("Z","C");
-        String expected_value = Files.readString(Paths.get("src/test/expected.dot"));
-        assertTrue(graphApi.outputDOTGraph("src/test/gen_graph.dot"));
-        assertEquals(expected_value, Files.readString(Paths.get("src/test/gen_graph.dot")));
+        String expected_value = Files.readString(Paths.get(EXPECTED_GRAPH_DOT_PATH));
+        assertTrue(graphApi.outputDOTGraph(OUTPUT_GRAPH_DOT_PATH));
+        assertEquals(expected_value, Files.readString(Paths.get(OUTPUT_GRAPH_DOT_PATH)));
     }
 
 }
