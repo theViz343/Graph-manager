@@ -49,10 +49,10 @@ public class GraphData {
 
     @Override
     public String toString() {
-        String opt = "";
-        opt+="Number of nodes: "+graphObject.vertexSet().size()+"\n";
-        opt+="Node labels: "+graphObject.vertexSet()+"\n";
-        opt+="Number of edges: "+graphObject.edgeSet().size()+"\n";
+        String graphString = "";
+        graphString+="Number of nodes: "+graphObject.vertexSet().size()+"\n";
+        graphString+="Node labels: "+graphObject.vertexSet()+"\n";
+        graphString+="Number of edges: "+graphObject.edgeSet().size()+"\n";
         StringBuilder edges = new StringBuilder();
         for (DefaultEdge e: graphObject.edgeSet()) {
             edges.append(e.toString().replace(":", "->"));
@@ -60,14 +60,14 @@ public class GraphData {
         }
         edges.deleteCharAt(edges.length() - 1);
         edges.deleteCharAt(edges.length() - 1);
-        opt+="Node and edge directions: "+edges+"\n";
-        return opt;
+        graphString+="Node and edge directions: "+edges+"\n";
+        return graphString;
     }
 
     public boolean outputGraph(String filepath) {
-        String opt = toString();
+        String graphString = toString();
         try {
-            Files.writeString(Paths.get(filepath), opt, StandardCharsets.ISO_8859_1);
+            Files.writeString(Paths.get(filepath), graphString, StandardCharsets.ISO_8859_1);
             return true;
         } catch (IOException e) {
             System.out.println("Cannot write file at " + filepath);
