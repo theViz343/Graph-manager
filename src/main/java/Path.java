@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Path {
@@ -12,7 +13,12 @@ public class Path {
     }
 
     public void printPath() {
-        String s = String.join("->", path.reversed());
-        System.out.println(s);
+        if (path != null) {
+            Collections.reverse(path);
+            String s = String.join("->", path);
+            System.out.println(s);
+        } else {
+            System.out.println("Path is empty");
+        }
     }
 }
