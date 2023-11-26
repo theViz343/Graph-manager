@@ -141,75 +141,18 @@ public class GraphData {
     }
 
     public Path GraphSearch(String src, String dst, Algorithm algo) {
-        Path p = new Path();
-        String source = src;
-        HashMap<String, Boolean> visited = new HashMap<>();
-        HashMap<String, String> parent = new HashMap<>();
-
-        // Select algorithm and apply it
+        GraphSearchAlgorithm searchAlgorithm;
         switch(algo) {
-            case Algorithm.BFS: {
-                System.out.println("Using BFS");
-                LinkedList<String> queue = new LinkedList<>();
-                visited.put(src, true);
-                queue.add(src);
-
-                while (!queue.isEmpty()) {
-
-                    src = queue.poll();
-                    if (Objects.equals(src, dst)) {
-                        break;
-                    }
-                    List<String> successors = Graphs.neighborListOf(graphObject,src);
-                    for (String node : successors) {
-
-                        if (visited.get(node) == null) {
-                            visited.put(node, true);
-                            parent.put(node, src);
-                            queue.add(node);
-                        }
-                    }
-                }
+            case BFS:
+                searchAlgorithm = new BFS(src, dst, graphObject);
                 break;
-            }
-            case Algorithm.DFS: {
-                System.out.println("Using DFS");
-                Stack<String> stack = new Stack<>();
-                visited.put(src, true);
-                stack.push(src);
-
-                while (!stack.isEmpty()) {
-
-                    src = stack.pop();
-                    if (Objects.equals(src, dst)) {
-                        break;
-                    }
-                    List<String> successors = Graphs.neighborListOf(graphObject,src);
-                    for (String node : successors) {
-
-                        if (visited.get(node) == null) {
-                            visited.put(node, true);
-                            parent.put(node, src);
-                            stack.push(node);
-                        }
-                    }
-                }
+            case DFS:
+                searchAlgorithm = new DFS(src, dst, graphObject);
                 break;
-            }
+            default:
+                throw new IllegalArgumentException("Invalid choice of algorithm");
         }
-        String node = dst;
-        p.add(node);
-        if (visited.get(dst) != null) {
-            while (true) {
-                if (Objects.equals(node, source)) {
-                    return p;
-                }
-                node = parent.get(node);
-                p.add(node);
-            }
-        } else {
-            return null;
-        }
+        return searchAlgorithm.graphSearch();
     }
     public void removeEdge(String srcLabel, String dstLabel) throws Exception {
         DefaultEdge edgeexisting = graphObject.getEdge(srcLabel, dstLabel);
