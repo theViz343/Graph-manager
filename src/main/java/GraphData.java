@@ -141,18 +141,19 @@ public class GraphData {
     }
 
     public Path GraphSearch(String src, String dst, Algorithm algo) {
-        GraphSearchAlgorithm searchAlgorithm;
+        SearchStrategy strategy;
         switch(algo) {
             case BFS:
-                searchAlgorithm = new BFS(src, dst, graphObject);
+                strategy = new BFS(src, dst, graphObject);
                 break;
             case DFS:
-                searchAlgorithm = new DFS(src, dst, graphObject);
+                strategy = new DFS(src, dst, graphObject);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid choice of algorithm");
         }
-        return searchAlgorithm.graphSearch();
+        Context searchContext = new Context(strategy);
+        return searchContext.searchByStrategy();
     }
     public void removeEdge(String srcLabel, String dstLabel) throws Exception {
         DefaultEdge edgeexisting = graphObject.getEdge(srcLabel, dstLabel);

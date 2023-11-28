@@ -33,7 +33,7 @@ abstract class GraphSearchAlgorithm {
     protected abstract Path getPath();
 }
 
-class BFS extends GraphSearchAlgorithm {
+class BFS extends GraphSearchAlgorithm implements SearchStrategy {
     private LinkedList<String> queue;
 
     public BFS(String src, String dst, Graph graph) {
@@ -41,13 +41,14 @@ class BFS extends GraphSearchAlgorithm {
         queue = new LinkedList<>();
     }
 
-    protected void selectAlgorithm() {
+    @Override
+    public void selectAlgorithm() {
         System.out.println("Using BFS");
         visited.put(source, true);
         queue.add(source);
     }
-
-    protected void executeAlgorithm() {
+    @Override
+    public void executeAlgorithm() {
         while (!queue.isEmpty()) {
             String src = queue.poll();
             if (src.equals(destination)) {
@@ -64,7 +65,8 @@ class BFS extends GraphSearchAlgorithm {
         }
     }
 
-    protected Path getPath() {
+    @Override
+    public Path getPath() {
         String node = destination;
         path.add(node);
         if (visited.get(destination) != null) {
@@ -81,7 +83,7 @@ class BFS extends GraphSearchAlgorithm {
     }
 }
 
-class DFS extends GraphSearchAlgorithm {
+class DFS extends GraphSearchAlgorithm implements SearchStrategy {
     private Stack<String> stack;
 
     public DFS(String src, String dst, Graph graph) {
@@ -89,13 +91,15 @@ class DFS extends GraphSearchAlgorithm {
         stack = new Stack<>();
     }
 
-    protected void selectAlgorithm() {
+    @Override
+    public void selectAlgorithm() {
         System.out.println("Using DFS");
         visited.put(source, true);
         stack.push(source);
     }
 
-    protected void executeAlgorithm() {
+    @Override
+    public void executeAlgorithm() {
         while (!stack.isEmpty()) {
             String src = stack.pop();
             if (src.equals(destination)) {
@@ -112,7 +116,8 @@ class DFS extends GraphSearchAlgorithm {
         }
     }
 
-    protected Path getPath() {
+    @Override
+    public Path getPath() {
         String node = destination;
         path.add(node);
         if (visited.get(destination) != null) {
