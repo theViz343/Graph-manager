@@ -133,3 +133,61 @@ class DFS extends GraphSearchAlgorithm implements SearchStrategy {
         }
     }
 }
+
+class RWS extends GraphSearchAlgorithm implements SearchStrategy {
+    private List<String> arr;
+
+    public RWS(String src, String dst, Graph graph) {
+        super(src, dst, graph);
+        arr = new ArrayList<>();
+    }
+
+    @Override
+    public void selectAlgorithm() {
+        System.out.println("Using Random Walk Search (RWS)");
+        visited.put(source, true);
+        arr.add(source);
+    }
+
+    @Override
+    public void executeAlgorithm() {
+        while (!arr.isEmpty()) {
+            String src = arr.get((int) (Math.random() * arr.size()));
+            arr.remove(src);
+            System.out.println("Visiting "+src);
+            if (src.equals(destination)) {
+                break;
+            }
+            List<String> successors = Graphs.successorListOf(graphObject, src);
+            if (successors.isEmpty()) {
+                arr.remove(src);
+                continue;
+            }
+            Collections.shuffle(successors);
+            for (String node : successors) {
+                if (visited.get(node) == null) {
+                    visited.put(node, true);
+                    parent.put(node, src);
+                    arr.add(node);
+                }
+            }
+        }
+    }
+
+    @Override
+    public Path getPath() {
+        String node = destination;
+        path.add(node);
+        if (visited.get(destination) != null) {
+            while (true) {
+                if (node.equals(source)) {
+                    return path;
+                }
+                node = parent.get(node);
+                path.add(node);
+            }
+        } else {
+            return null;
+        }
+    }
+}

@@ -23,7 +23,8 @@ public class GraphData {
 
     enum Algorithm{
         BFS,
-        DFS
+        DFS,
+        RWS,
     }
 
     public Graph<String, DefaultEdge> getGraph() {
@@ -149,6 +150,9 @@ public class GraphData {
             case DFS:
                 strategy = new DFS(src, dst, graphObject);
                 break;
+            case RWS:
+                strategy = new RWS(src, dst, graphObject);
+                break;
             default:
                 throw new IllegalArgumentException("Invalid choice of algorithm");
         }
@@ -197,11 +201,12 @@ public class GraphData {
     }
     public static void main(String[] args) {
         GraphData graphApi = new GraphData();
-        graphApi.parseGraph("src/main/resources/example.dot");
-        graphApi.addNode("E");
-        graphApi.addEdge("D","E");
-        System.out.println(graphApi.toString());
-        Path path = graphApi.GraphSearch("C","D", Algorithm.BFS);
+        graphApi.parseGraph("src/main/resources/input2.dot");
+        graphApi.outputGraphics("src/main/resources/", "png");
+//        graphApi.addNode("E");
+//        graphApi.addEdge("D","E");
+//        System.out.println(graphApi.toString());
+        Path path = graphApi.GraphSearch("a","c", Algorithm.RWS);
         path.printPath();
 //        graphApi.outputGraph("src/main/resources/output.txt");
 //        graphApi.addNodes(new String[]{"Z", "X"});
@@ -211,7 +216,6 @@ public class GraphData {
 //        graphApi.addEdge("Z", "X");
 //        System.out.println(graphApi.toString());
 //        graphApi.outputDOTGraph("src/main/resources/gen_graph.dot");
-//        graphApi.outputGraphics("src/main/resources/", "png");
 
 
 
