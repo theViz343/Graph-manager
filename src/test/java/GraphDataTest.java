@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class GraphDataTest {
     GraphData graphApi = new GraphData();
     static final String GRAPH_PATH = "src/test/test_graph.dot";
+    static final String CANVAS_GRAPH_PATH = "src/main/resources/input2.dot";
     static final String OUTPUT_GRAPH_STRING_PATH = "src/test/output.txt";
     static final String OUTPUT_GRAPH_DOT_PATH = "src/test/gen_graph.dot";
     static final String EXPECTED_GRAPH_DOT_PATH = "src/test/expected.dot";
@@ -188,6 +189,23 @@ public class GraphDataTest {
     @DisplayName("Test dfs graph search api (node does not exist)")
     public void TestGraphSearchNotExistDFS() {
         Path path = graphApi.GraphSearch("C", "X", GraphData.Algorithm.DFS);
+        assertNull(path);
+    }
+
+    @Test
+    @DisplayName("Test rws graph search api")
+    public void TestGraphSearchRWS() {
+        graphApi.parseGraph(CANVAS_GRAPH_PATH);
+        Path path = graphApi.GraphSearch("a", "c", GraphData.Algorithm.RWS);
+        List<String> expected = List.of(new String[]{"c", "b", "a"});
+        assertEquals(path.path, expected);
+    }
+
+    @Test
+    @DisplayName("Test rws graph search api (node does not exist)")
+    public void TestGraphSearchNotExistRWS() {
+        graphApi.parseGraph(CANVAS_GRAPH_PATH);
+        Path path = graphApi.GraphSearch("h", "e", GraphData.Algorithm.RWS);
         assertNull(path);
     }
 
