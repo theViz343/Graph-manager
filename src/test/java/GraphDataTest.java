@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class GraphDataTest {
     GraphData graphApi = new GraphData();
     static final String GRAPH_PATH = "src/test/test_graph.dot";
-    static final String CANVAS_GRAPH_PATH = "src/main/resources/input2.dot";
+    static final String CANVAS_GRAPH_PATH = "src/test/input2.dot";
     static final String OUTPUT_GRAPH_STRING_PATH = "src/test/output.txt";
     static final String OUTPUT_GRAPH_DOT_PATH = "src/test/gen_graph.dot";
     static final String EXPECTED_GRAPH_DOT_PATH = "src/test/expected.dot";
