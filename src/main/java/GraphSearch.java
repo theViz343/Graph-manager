@@ -30,7 +30,21 @@ abstract class GraphSearchAlgorithm {
     // Abstract methods to be implemented by subclasses
     protected abstract void selectAlgorithm();
     protected abstract void executeAlgorithm();
-    protected abstract Path getPath();
+    public Path getPath() {
+        String node = destination;
+        path.add(node);
+        if (visited.get(destination) != null) {
+            while (true) {
+                if (node.equals(source)) {
+                    return path;
+                }
+                node = parent.get(node);
+                path.add(node);
+            }
+        } else {
+            return null;
+        }
+    }
 }
 
 class BFS extends GraphSearchAlgorithm implements SearchStrategy {
@@ -62,23 +76,6 @@ class BFS extends GraphSearchAlgorithm implements SearchStrategy {
                     queue.add(node);
                 }
             }
-        }
-    }
-
-    @Override
-    public Path getPath() {
-        String node = destination;
-        path.add(node);
-        if (visited.get(destination) != null) {
-            while (true) {
-                if (node.equals(source)) {
-                    return path;
-                }
-                node = parent.get(node);
-                path.add(node);
-            }
-        } else {
-            return null;
         }
     }
 }
@@ -113,23 +110,6 @@ class DFS extends GraphSearchAlgorithm implements SearchStrategy {
                     stack.push(node);
                 }
             }
-        }
-    }
-
-    @Override
-    public Path getPath() {
-        String node = destination;
-        path.add(node);
-        if (visited.get(destination) != null) {
-            while (true) {
-                if (node.equals(source)) {
-                    return path;
-                }
-                node = parent.get(node);
-                path.add(node);
-            }
-        } else {
-            return null;
         }
     }
 }
@@ -171,23 +151,6 @@ class RWS extends GraphSearchAlgorithm implements SearchStrategy {
                     arr.add(node);
                 }
             }
-        }
-    }
-
-    @Override
-    public Path getPath() {
-        String node = destination;
-        path.add(node);
-        if (visited.get(destination) != null) {
-            while (true) {
-                if (node.equals(source)) {
-                    return path;
-                }
-                node = parent.get(node);
-                path.add(node);
-            }
-        } else {
-            return null;
         }
     }
 }
