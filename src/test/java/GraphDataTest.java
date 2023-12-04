@@ -14,9 +14,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class GraphDataTest {
     GraphData graphApi = new GraphData();
+    static final String GRAPH_PATH = "src/test/test_graph.dot";
+    static final String CANVAS_GRAPH_PATH = "src/test/input2.dot";
+    static final String OUTPUT_GRAPH_STRING_PATH = "src/test/output.txt";
+    static final String OUTPUT_GRAPH_DOT_PATH = "src/test/gen_graph.dot";
+    static final String EXPECTED_GRAPH_DOT_PATH = "src/test/expected.dot";
+
     @BeforeEach
     public void init_graph() {
-        assertTrue(graphApi.parseGraph("src/test/test_graph.dot"));
+        assertTrue(graphApi.parseGraph(GRAPH_PATH));
     }
 
     @Test
@@ -27,13 +33,13 @@ public class GraphDataTest {
         nodes.add("B");
         nodes.add("C");
         nodes.add("D");
-        assertEquals(nodes, graphApi.graphObject.vertexSet());
+        assertEquals(nodes, graphApi.getGraph().vertexSet());
         Set<String> edges = new HashSet<String>();
         Set<String> expected_edges = new HashSet<String>();
         edges.add("(A : B)");
         edges.add("(A : C)");
         edges.add("(A : D)");
-        for (DefaultEdge e: graphApi.graphObject.edgeSet()) {
+        for (DefaultEdge e: graphApi.getGraph().edgeSet()) {
             expected_edges.add(e.toString());
         }
         assertEquals(expected_edges, edges);
@@ -59,15 +65,15 @@ public class GraphDataTest {
                 Number of edges: 3
                 Node and edge directions: (A -> B), (A -> C), (A -> D)
                 """;
-        assertTrue(graphApi.outputGraph("src/test/output.txt"));
-        assertEquals(expected_value, Files.readString(Paths.get("src/test/output.txt")));
+        assertTrue(graphApi.outputGraph(OUTPUT_GRAPH_STRING_PATH));
+        assertEquals(expected_value, Files.readString(Paths.get(OUTPUT_GRAPH_STRING_PATH)));
     }
 
     @Test
     @DisplayName("Test outputGraph if node does not exist already")
     public void TestAddNode(){
         assertTrue(graphApi.addNode("Z"));
-        assertTrue(graphApi.graphObject.vertexSet().stream().anyMatch(v -> (v.equals("Z"))));
+        assertTrue(graphApi.getGraph().vertexSet().stream().anyMatch(v -> (v.equals("Z"))));
     }
 
     @Test
@@ -83,7 +89,7 @@ public class GraphDataTest {
         String[] nodes = {"Z", "X", "Y"};
         graphApi.addNodes(nodes);
         for(String node:nodes) {
-            assertTrue(graphApi.graphObject.vertexSet().stream().anyMatch(v -> (v.equals(node))));
+            assertTrue(graphApi.getGraph().vertexSet().stream().anyMatch(v -> (v.equals(node))));
         }
     }
 
@@ -98,7 +104,7 @@ public class GraphDataTest {
     @DisplayName("Test removeNode if node exists.")
     public void TestRemoveNode() throws Exception {
         graphApi.removeNode("A");
-        assertFalse(graphApi.graphObject.vertexSet().stream().anyMatch(v -> (v.equals("A"))));
+        assertFalse(graphApi.getGraph().vertexSet().stream().anyMatch(v -> (v.equals("A"))));
     }
 
     @Test
@@ -113,7 +119,7 @@ public class GraphDataTest {
         String[] nodes = {"A", "B", "C"};
         graphApi.removeNodes(nodes);
         for(String node:nodes) {
-            assertFalse(graphApi.graphObject.vertexSet().stream().anyMatch(v -> (v.equals(node))));
+            assertFalse(graphApi.getGraph().vertexSet().stream().anyMatch(v -> (v.equals(node))));
         }
     }
 
@@ -187,13 +193,30 @@ public class GraphDataTest {
     }
 
     @Test
+    @DisplayName("Test rws graph search api")
+    public void TestGraphSearchRWS() {
+        graphApi.parseGraph(CANVAS_GRAPH_PATH);
+        Path path = graphApi.GraphSearch("a", "c", GraphData.Algorithm.RWS);
+        List<String> expected = List.of(new String[]{"c", "b", "a"});
+        assertEquals(path.path, expected);
+    }
+
+    @Test
+    @DisplayName("Test rws graph search api (node does not exist)")
+    public void TestGraphSearchNotExistRWS() {
+        graphApi.parseGraph(CANVAS_GRAPH_PATH);
+        Path path = graphApi.GraphSearch("h", "e", GraphData.Algorithm.RWS);
+        assertNull(path);
+    }
+
+    @Test
     @DisplayName("Test DOT graph generation")
     public void TestOutputDOTGraph() throws IOException {
         graphApi.addNode("Z");
         graphApi.addEdge("Z","C");
-        String expected_value = Files.readString(Paths.get("src/test/expected.dot"));
-        assertTrue(graphApi.outputDOTGraph("src/test/gen_graph.dot"));
-        assertEquals(expected_value, Files.readString(Paths.get("src/test/gen_graph.dot")));
+        String expected_value = Files.readString(Paths.get(EXPECTED_GRAPH_DOT_PATH));
+        assertTrue(graphApi.outputDOTGraph(OUTPUT_GRAPH_DOT_PATH));
+        assertEquals(expected_value, Files.readString(Paths.get(OUTPUT_GRAPH_DOT_PATH)));
     }
 
 }

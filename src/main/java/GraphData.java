@@ -19,11 +19,16 @@ import java.util.*;
 import java.util.List;
 
 public class GraphData {
-    Graph<String, DefaultEdge> graphObject = new DefaultDirectedGraph<>(DefaultEdge.class);
+    private Graph<String, DefaultEdge> graphObject = new DefaultDirectedGraph<>(DefaultEdge.class);
 
     enum Algorithm{
         BFS,
-        DFS
+        DFS,
+        RWS,
+    }
+
+    public Graph<String, DefaultEdge> getGraph() {
+        return graphObject;
     }
 
     public boolean parseGraph(String filepath) {
@@ -45,25 +50,28 @@ public class GraphData {
 
     @Override
     public String toString() {
-        String opt = "";
-        opt+="Number of nodes: "+graphObject.vertexSet().size()+"\n";
-        opt+="Node labels: "+graphObject.vertexSet()+"\n";
-        opt+="Number of edges: "+graphObject.edgeSet().size()+"\n";
+        String graphString = "";
+        graphString+="Number of nodes: "+graphObject.vertexSet().size()+"\n";
+        graphString+="Node labels: "+graphObject.vertexSet()+"\n";
+        graphString+="Number of edges: "+graphObject.edgeSet().size()+"\n";
         StringBuilder edges = new StringBuilder();
+
+        // Iterate over edges to form edge string
         for (DefaultEdge e: graphObject.edgeSet()) {
             edges.append(e.toString().replace(":", "->"));
             edges.append(", ");
         }
         edges.deleteCharAt(edges.length() - 1);
         edges.deleteCharAt(edges.length() - 1);
-        opt+="Node and edge directions: "+edges+"\n";
-        return opt;
+        graphString+="Node and edge directions: "+edges+"\n";
+        return graphString;
     }
 
     public boolean outputGraph(String filepath) {
-        String opt = toString();
+        // Use function defined earlier
+        String graphString = toString();
         try {
-            Files.writeString(Paths.get(filepath), opt, StandardCharsets.ISO_8859_1);
+            Files.writeString(Paths.get(filepath), graphString, StandardCharsets.ISO_8859_1);
             return true;
         } catch (IOException e) {
             System.out.println("Cannot write file at " + filepath);
@@ -73,6 +81,7 @@ public class GraphData {
     }
 
     public boolean addNode(String label) {
+        // Check if node already exists
         boolean existing = graphObject.vertexSet().stream().anyMatch(v -> Objects.equals(v, label));
 
         if (existing) {
@@ -88,12 +97,14 @@ public class GraphData {
     public boolean addNodes(String[] labels) {
         boolean result = true;
         for(String label: labels) {
+            // Store the logical AND for the boolean values returned by the function
             result = result && addNode(label);
         }
         return result;
     }
 
     public void removeNode(String label) throws Exception {
+        // Check if node already exists
         boolean existing = graphObject.vertexSet().stream().anyMatch(v -> Objects.equals(v, label));
 
         if (existing) {
@@ -131,77 +142,26 @@ public class GraphData {
     }
 
     public Path GraphSearch(String src, String dst, Algorithm algo) {
-        Path p = new Path();
-        String source = src;
-        HashMap<String, Boolean> visited = new HashMap<>();
-        HashMap<String, String> parent = new HashMap<>();
-
+        SearchStrategy strategy;
         switch(algo) {
-            case Algorithm.BFS: {
-                System.out.println("Using BFS");
-                LinkedList<String> queue = new LinkedList<>();
-                visited.put(src, true);
-                queue.add(src);
-
-                while (!queue.isEmpty()) {
-
-                    src = queue.poll();
-                    if (Objects.equals(src, dst)) {
-                        break;
-                    }
-                    List<String> successors = Graphs.neighborListOf(graphObject,src);
-                    for (String node : successors) {
-
-                        if (visited.get(node) == null) {
-                            visited.put(node, true);
-                            parent.put(node, src);
-                            queue.add(node);
-                        }
-                    }
-                }
+            case BFS:
+                strategy = new BFS(src, dst, graphObject);
                 break;
-            }
-            case Algorithm.DFS: {
-                System.out.println("Using DFS");
-                Stack<String> stack = new Stack<>();
-                visited.put(src, true);
-                stack.push(src);
-
-                while (!stack.isEmpty()) {
-
-                    src = stack.pop();
-                    if (Objects.equals(src, dst)) {
-                        break;
-                    }
-                    List<String> successors = Graphs.neighborListOf(graphObject,src);
-                    for (String node : successors) {
-
-                        if (visited.get(node) == null) {
-                            visited.put(node, true);
-                            parent.put(node, src);
-                            stack.push(node);
-                        }
-                    }
-                }
+            case DFS:
+                strategy = new DFS(src, dst, graphObject);
                 break;
-            }
+            case RWS:
+                strategy = new RWS(src, dst, graphObject);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid choice of algorithm");
         }
-        String node = dst;
-        p.add(node);
-        if (visited.get(dst) != null) {
-            while (true) {
-                if (Objects.equals(node, source)) {
-                    return p;
-                }
-                node = parent.get(node);
-                p.add(node);
-            }
-        } else {
-            return null;
-        }
+        Context searchContext = new Context(strategy);
+        return searchContext.searchByStrategy();
     }
     public void removeEdge(String srcLabel, String dstLabel) throws Exception {
         DefaultEdge edgeexisting = graphObject.getEdge(srcLabel, dstLabel);
+        // Check if edge exists
         if (edgeexisting==null) {
             throw new Exception("Edge does not exist!");
         } else {
@@ -241,11 +201,12 @@ public class GraphData {
     }
     public static void main(String[] args) {
         GraphData graphApi = new GraphData();
-        graphApi.parseGraph("src/main/resources/example.dot");
-        graphApi.addNode("E");
-        graphApi.addEdge("D","E");
-        System.out.println(graphApi.toString());
-        Path path = graphApi.GraphSearch("C","D", Algorithm.BFS);
+        graphApi.parseGraph("src/main/resources/input2.dot");
+        graphApi.outputGraphics("src/main/resources/", "png");
+//        graphApi.addNode("E");
+//        graphApi.addEdge("D","E");
+//        System.out.println(graphApi.toString());
+        Path path = graphApi.GraphSearch("a","c", Algorithm.RWS);
         path.printPath();
 //        graphApi.outputGraph("src/main/resources/output.txt");
 //        graphApi.addNodes(new String[]{"Z", "X"});
@@ -255,7 +216,6 @@ public class GraphData {
 //        graphApi.addEdge("Z", "X");
 //        System.out.println(graphApi.toString());
 //        graphApi.outputDOTGraph("src/main/resources/gen_graph.dot");
-//        graphApi.outputGraphics("src/main/resources/", "png");
 
 
 
