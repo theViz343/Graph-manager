@@ -100,6 +100,53 @@ Expected Output
 Using BFS
 C->A->D
 ```
+
+### Project Part 3
+#### Refactors
+- [refactor: Encapsulate graphObject and create a getter function.](https://github.com/theViz343/CSE-464-2023-vpillai9/commit/e45a2ce14883c4aeb67f4e0d2690915c36e25566)
+  This refactor commit aims to encapsulate the `graphObject` object by
+  making it private to the `GraphData` class. A getter function called
+  `getGraph` is now used to safely access the object.
+- [refactor: Rename opt variable to graphString.](https://github.com/theViz343/CSE-464-2023-vpillai9/commit/1d4cf4c5c13e876740ae2c57690330be4ed6c287)
+  The variable name 'opt' does not provide a good idea about its purpose,
+  so I rename it to `graphString` to make it clearer.
+- [refactor: Convert test filepaths to static final variables.](https://github.com/theViz343/CSE-464-2023-vpillai9/commit/12569c6a57a00f3ed376a8ebec8f425daf416e08)
+  This commit converts test filepaths to `static` `final` variables. This
+  helps to organise the test parameters a bit more easily.
+- [refactor: Add nullcheck in printPath function.](https://github.com/theViz343/CSE-464-2023-vpillai9/commit/390f17afecffe4c7d76adca79a21303f7e9bc83d)
+  This commit aims to avoid a `NullPointerException` by adding a null check
+  to the function printPath.
+- [refactor: Add comments in multiple functions](https://github.com/theViz343/CSE-464-2023-vpillai9/commit/4478848e3902af99ab67b6f840414f7a34ff132b)
+  This commit introduces comments at various parts of the codebase to
+  explain written code better.
+#### Template Pattern
+The Template Pattern involves:
+- Creating an abstract class (`GraphSearch`) to define common graph search steps.
+- Extending this template with concrete subclasses (`BFS` and `DFS`) that implement specific traversal methods by overriding abstract template methods.
+- This structure provides a shared algorithm skeleton while allowing `BFS` and `DFS` to have their unique implementations.
+
+#### Strategy Pattern
+The Strategy Pattern involves:
+- Defining a strategy interface (`SearchStrategy`) that declares a method signature for the algorithm.
+- Creating concrete strategy classes (`BFS` and `DFS`) that implement the strategy interface with their specific algorithm implementations.
+- Implementing a context class (`Context`) that holds a reference to the strategy interface and utilizes it to execute the selected strategy.
+- Utilizing the `Context` class in the main code to dynamically switch between different strategies (`BFS` or `DFS`) based on input.
+
+#### Random Walk Search
+Exampe graph (from Canvas)
+![[Pasted image 20231203183455.png]]
+
+Running this code,
+```
+Path path = graphApi.GraphSearch("a","c", Algorithm.RWS);  
+path.printPath();
+```
+gives the following outputs -
+![[Pasted image 20231203183730.png]]
+![[Pasted image 20231203183757.png]]
+![[Pasted image 20231203183807.png]]
+
+
 ### Commits
 #### main
 - [Initial commit](https://github.com/theViz343/CSE-464-2023-vpillai9/commit/68f578cbb07ce42c62e9474c30c1f34977b95783)
@@ -133,3 +180,22 @@ C->A->D
 #### dfs
 - [Add GraphSearch API with DFS algorithm.](https://github.com/theViz343/CSE-464-2023-vpillai9/commit/9fd0504b907dbaac5b1ec14bd0bbbb12d67ade71)
 - [Add dfs GraphSearch tests.](https://github.com/theViz343/CSE-464-2023-vpillai9/commit/3b37cee0d51486a164900ca3f8bba6b49218efa5)
+
+#### refactors
+- [refactor: Encapsulate graphObject and create a getter function.](https://github.com/theViz343/CSE-464-2023-vpillai9/commit/e45a2ce14883c4aeb67f4e0d2690915c36e25566)
+- [refactor: Rename opt variable to graphString.](https://github.com/theViz343/CSE-464-2023-vpillai9/commit/1d4cf4c5c13e876740ae2c57690330be4ed6c287)
+- [refactor: Convert test filepaths to static final variables.](https://github.com/theViz343/CSE-464-2023-vpillai9/commit/12569c6a57a00f3ed376a8ebec8f425daf416e08)
+- [refactor: Add nullcheck in printPath function.](https://github.com/theViz343/CSE-464-2023-vpillai9/commit/390f17afecffe4c7d76adca79a21303f7e9bc83d)
+- [refactor: Add comments in multiple functions](https://github.com/theViz343/CSE-464-2023-vpillai9/commit/4478848e3902af99ab67b6f840414f7a34ff132b)
+
+#### Template & Strategy patterns
+- [Implement template pattern for graph search algorithms.](https://github.com/theViz343/CSE-464-2023-vpillai9/commit/3c6fa30a096abfb07f256444f9ba0b43fec1877a)
+- [Add strategy pattern to graph search functionality.](https://github.com/theViz343/CSE-464-2023-vpillai9/commit/e1702573c0d81d6e8b86c2da5e29c1eb18eb13e8)
+
+#### Random Walk Search
+- [Add Random Walk search algorithm as option.](https://github.com/theViz343/CSE-464-2023-vpillai9/commit/94ce68fe1eae225458cd85d3d5c4140a0b72990c)
+
+#### PR Review commits
+- [Extract getPath function to template class.](https://github.com/theViz343/CSE-464-2023-vpillai9/commit/3a7d5a593ba2e7d3e0a83c828989aa3e3030f371)
+- [Add random walk search tests.](https://github.com/theViz343/CSE-464-2023-vpillai9/commit/ca4ae7201f17e78cc08c98599eba09e3f2a59087)
+- [Add input test dot file for RWS test.](https://github.com/theViz343/CSE-464-2023-vpillai9/commit/6140ba9cc9016ab8961317c156cb4a05b848b9b4)
